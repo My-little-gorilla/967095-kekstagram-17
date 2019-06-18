@@ -1,30 +1,38 @@
+var raundedRandomNumber;
+var usersData = {
+usersLikes: 0,
+usersComments: 0
+};
+
 var randomNumber = function (min, max) {
-      randomNumber = min + Math.random() * (max + 1 - min);
-      raundedRandomNumber = Math.floor(randomNumber);
-      return Math.floor;
+    var randomNumber = min + Math.random() * (max + 1 - min);
+    raundedRandomNumber = Math.floor(randomNumber);
+    return raundedRandomNumber;
   }
 
-  // var quantityDescriptionPhoto = randomNumber(15, 200);
-  // console.log(quantityDescriptionPhoto);
-
+var url = [];
 var takePicture = function(){
-  for (var j = 0; j < 25; j++){
-  var url = ['photos/' + [j] + '.jpg'];
+  for (var i = 0; i < 25; i++){
+  url[i] = 'photos/' + [i] + '.jpg';
   return url;
   }
 };
 
+
+
+var like = [];
 var likes = function(){
   for (var i = 0; i < 25; i++) {
-    var likesArray = [i];
-
+    randomNumber(15, 200);
+    usersData[i].usersLikes = raundedRandomNumber;
   }
 };
-likes();
 
 var names = [
-'Иван',  'Хуан', 'Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита','Вашингтон'
+'Диван',  'Проспал', 'Дедлайн', 'Ерохин', 'Пепе', 'ЪЕЪ', 'Бинтуронг', 'Дед','Новый герой Новый поэт'
 ];
+
+
 
 
   var comments = [
