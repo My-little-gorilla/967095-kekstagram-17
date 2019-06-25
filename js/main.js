@@ -84,7 +84,7 @@ var getRandomPicture = function () {
   var picture = {
     url: photo,
     likes: likes,
-    message: getRandomCommentMessage()
+    comments: getRandomComments()
   };
   return picture;
 };
@@ -113,7 +113,7 @@ var renderPictures = function (pictures) {
     var pictureElement = template.cloneNode(true);
 
     pictureElement.querySelector('.picture__img').src = picture.url;
-    pictureElement.querySelector('.picture__comments').textContent = picture.message;
+    pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
     pictureElement.querySelector('.picture__likes').textContent = picture.likes;
     fragment.appendChild(pictureElement);
   }
