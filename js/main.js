@@ -135,3 +135,48 @@ renderPictures(pictures);
 //    4. 2. 2.  Число комментариев
 //  4. 3. Добавить получившийся шаблон во фрагмент
 // 5. Вставить фрагмент в конец контейнера
+var closeButton = document.querySelector('.img-upload__cancel')
+var editForm = document.querySelector('#upload-file');
+var editPhoto = document.querySelector('.img-upload__overlay');
+var largeImage = document.querySelector('.img-upload__preview');
+var effectsButtons = document.querySelectorAll('.effects__radio');
+var effectsPreviews = document.querySelectorAll('.effects__preview');
+var classNames = [];
+
+var randgeButton = document.querySelector('.effect-level__pin');
+var randgeLevelEffect = document.querySelector('.effect-level__depth');
+var levelContainer = document.querySelector('.effect-level');
+
+   editForm.addEventListener('change', function() {
+   editPhoto.classList.remove('hidden');
+ });
+
+closeButton.addEventListener('click', function(){
+   editPhoto.classList.add('hidden');
+});
+
+var classCount = function () {
+  var inputTypes = document.querySelectorAll('.effects__radio');
+  for (var i = 0; i < effectsPreviews.length; i++) {
+    classNames[i] = inputTypes[i].value;
+    }
+  return classNames;
+};
+console.log(classCount());
+
+
+var addClickHandler = function (thumbnail, className) {
+  thumbnail.addEventListener('click', function () {
+    largeImage.className = 'effects__preview--' + className;
+    if (className === 'none') {
+      levelContainer.classList.add('hidden')
+    }
+    else {
+      levelContainer.classList.remove('hidden');
+    }
+  });
+};
+
+for (var i = 0; i < effectsPreviews.length; i++) {
+  addClickHandler(effectsButtons[i], classNames[i]);
+}
