@@ -144,8 +144,12 @@ var effectsPreviews = document.querySelectorAll('.effects__preview');
 var classNames = [];
 
 var randgeButton = document.querySelector('.effect-level__pin');
-var randgeLevelEffect = document.querySelector('.effect-level__depth');
+var randgeLevelEffect = document.querySelector('.effect-level__line');
+var levelValue = document.querySelector('.effect-level__value');
+
+
 var levelContainer = document.querySelector('.effect-level');
+levelContainer.classList.add('hidden');
 
    editForm.addEventListener('change', function() {
    editPhoto.classList.remove('hidden');
@@ -180,3 +184,26 @@ var addClickHandler = function (thumbnail, className) {
 for (var i = 0; i < effectsPreviews.length; i++) {
   addClickHandler(effectsButtons[i], classNames[i]);
 }
+
+
+var defineLevelEffect = function () {
+  // ширина полосы уровня еффекта в пикселях
+  var levelFoolEffect = 453;
+
+  // уровень полосы до ползунка в пикселях
+  var currenLevelPin = 90;
+
+  один шаг по полосе эффекта в пикселях
+  var levelValueStep;
+
+
+  предпологаемая пропорция расчета нынешнего положения ползунка
+  var currentProcenPin;
+
+
+  randgeButton.addEventListener('mouseup', function () {
+    levelFoolEffect = levelFoolEffect / 100;
+    levelValueStep = levelFoolEffect;
+    currentProcenPin = currentLevelPin * 100 / levelFoolEffect;
+  }
+};
