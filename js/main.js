@@ -135,75 +135,86 @@ renderPictures(pictures);
 //    4. 2. 2.  Число комментариев
 //  4. 3. Добавить получившийся шаблон во фрагмент
 // 5. Вставить фрагмент в конец контейнера
-var closeButton = document.querySelector('.img-upload__cancel')
+var form = document.querySelector('.img-upload__form');
+var closeButton = document.querySelector('.img-upload__cancel');
 var editForm = document.querySelector('#upload-file');
 var editPhoto = document.querySelector('.img-upload__overlay');
 var largeImage = document.querySelector('.img-upload__preview');
 var effectsButtons = document.querySelectorAll('.effects__radio');
 var effectsPreviews = document.querySelectorAll('.effects__preview');
-var classNames = [];
+var inputTypes = document.querySelectorAll('.effects__radio');
+
 
 var randgeButton = document.querySelector('.effect-level__pin');
-var randgeLevelEffect = document.querySelector('.effect-level__line');
-var levelValue = document.querySelector('.effect-level__value');
+// var randgeLevelEffect = document.querySelector('.effect-level__line');
+// var levelValue = document.querySelector('.effect-level__value');
 
 
 var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
 
-   editForm.addEventListener('change', function() {
-   editPhoto.classList.remove('hidden');
- });
+editForm.addEventListener('change', function () {
+  editPhoto.classList.remove('hidden');
+});
 
-closeButton.addEventListener('click', function(){
-   editPhoto.classList.add('hidden');
+closeButton.addEventListener('click', function () {
+  editPhoto.classList.add('hidden');
+  form.reset();
 });
 
 var classCount = function () {
-  var inputTypes = document.querySelectorAll('.effects__radio');
+  var classNames = [];
   for (var i = 0; i < effectsPreviews.length; i++) {
     classNames[i] = inputTypes[i].value;
-    }
+  }
   return classNames;
 };
-console.log(classCount());
 
 
 var addClickHandler = function (thumbnail, className) {
   thumbnail.addEventListener('click', function () {
     largeImage.className = 'effects__preview--' + className;
     if (className === 'none') {
-      levelContainer.classList.add('hidden')
-    }
-    else {
+      levelContainer.classList.add('hidden');
+    } else {
       levelContainer.classList.remove('hidden');
     }
   });
 };
 
-for (var i = 0; i < effectsPreviews.length; i++) {
-  addClickHandler(effectsButtons[i], classNames[i]);
+for (var i = 0; i < inputTypes.length; i++) {
+  addClickHandler(effectsButtons[i], classCount()[i]);
 }
+//
+// var effectsRadio = document.querySelector('.effects');
+// effectsRadio.addEventListener('change', function (evt) {
+//   applyFilter(evt.target.value, 100);
+// });
+// var applyFilter = function (filter) {
+//   largeImage.className = 'effects__preview--' + filter;
+// 	if (className === 'effects__preview--none') {
+//     levelContainer.classList.add('hidden')
+//   } else {
+//     levelContainer.classList.remove('hidden');
+//   }
+// }
 
 
-var defineLevelEffect = function () {
-  // ширина полосы уровня еффекта в пикселях
-  var levelFoolEffect = 453;
+// var defineLevelEffect = function () {
+//   // ширина полосы уровня еффекта в пикселях
+//   var levelFoolEffect = 453;
+//
+//   // уровень полосы до ползунка в пикселях
+//   var currenLevelPin = 90;
+//
+//   // один шаг по полосе эффекта в пикселях
+//   var levelValueStep;
+//
 
-  // уровень полосы до ползунка в пикселях
-  var currenLevelPin = 90;
-
-  один шаг по полосе эффекта в пикселях
-  var levelValueStep;
-
-
-  предпологаемая пропорция расчета нынешнего положения ползунка
-  var currentProcenPin;
-
-
-  randgeButton.addEventListener('mouseup', function () {
+// предпологаемая пропорция расчета нынешнего положения ползунка
+var currentProcenPin;
+randgeButton.addEventListener('mouseup', function () {
     levelFoolEffect = levelFoolEffect / 100;
     levelValueStep = levelFoolEffect;
     currentProcenPin = currentLevelPin * 100 / levelFoolEffect;
-  }
-};
+  })
