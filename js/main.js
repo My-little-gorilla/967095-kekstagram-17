@@ -101,10 +101,6 @@ var getRandomPictures = function () {
 var renderPictures = function (pictures) {
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#picture').content.querySelector('.picture');
-  // img
-  // div
-  //  span.likes
-  //  span.comments
 
   var container = document.querySelector('.pictures');
 
@@ -140,12 +136,12 @@ var closeButton = document.querySelector('.img-upload__cancel');
 var editForm = document.querySelector('#upload-file');
 var editPhoto = document.querySelector('.img-upload__overlay');
 var largeImage = document.querySelector('.img-upload__preview');
-var effectsButtons = document.querySelectorAll('.effects__radio');
-var effectsPreviews = document.querySelectorAll('.effects__preview');
-var inputTypes = document.querySelectorAll('.effects__radio');
+// var effectsButtons = document.querySelectorAll('.effects__radio');
+// var effectsPreviews = document.querySelectorAll('.effects__preview');
+// var inputTypes = document.querySelectorAll('.effects__radio');
 
 
-var randgeButton = document.querySelector('.effect-level__pin');
+// var randgeButton = document.querySelector('.effect-level__pin');
 // var randgeLevelEffect = document.querySelector('.effect-level__line');
 // var levelValue = document.querySelector('.effect-level__value');
 
@@ -162,42 +158,18 @@ closeButton.addEventListener('click', function () {
   form.reset();
 });
 
-var classCount = function () {
-  var classNames = [];
-  for (var i = 0; i < effectsPreviews.length; i++) {
-    classNames[i] = inputTypes[i].value;
-  }
-  return classNames;
-};
-
-
-// var addClickHandler = function (thumbnail, className) {
-//   thumbnail.addEventListener('click', function () {
-//     largeImage.className = 'effects__preview--' + className;
-//     if (className === 'none') {
-//       levelContainer.classList.add('hidden');
-//     } else {
-//       levelContainer.classList.remove('hidden');
-//     }
-//   });
-// };
-//
-// for (var i = 0; i < inputTypes.length; i++) {
-//   addClickHandler(effectsButtons[i], classCount()[i]);
-// }
-//
 var effectsRadio = document.querySelector('.effects');
 effectsRadio.addEventListener('change', function (evt) {
   applyFilter(evt.target.value, 100);
 });
 var applyFilter = function (filter) {
   largeImage.className = 'effects__preview--' + filter;
-	if (filter === 'none') {
-    levelContainer.classList.add('hidden')
+  if (filter === 'none') {
+    levelContainer.classList.add('hidden');
   } else {
     levelContainer.classList.remove('hidden');
   }
-}
+};
 
 
 // var defineLevelEffect = function () {
@@ -212,9 +184,9 @@ var applyFilter = function (filter) {
 //
 
 // предпологаемая пропорция расчета нынешнего положения ползунка
-var currentProcenPin;
-randgeButton.addEventListener('mouseup', function () {
-    levelFoolEffect = levelFoolEffect / 100;
-    levelValueStep = levelFoolEffect;
-    currentProcenPin = currentLevelPin * 100 / levelFoolEffect;
-  })
+// var currentProcenPin;
+// randgeButton.addEventListener('mouseup', function () {
+//     levelFoolEffect = levelFoolEffect / 100;
+//     levelValueStep = levelFoolEffect;
+//     currentProcenPin = currentLevelPin * 100 / levelFoolEffect;
+//   })
