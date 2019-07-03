@@ -171,33 +171,33 @@ var classCount = function () {
 };
 
 
-var addClickHandler = function (thumbnail, className) {
-  thumbnail.addEventListener('click', function () {
-    largeImage.className = 'effects__preview--' + className;
-    if (className === 'none') {
-      levelContainer.classList.add('hidden');
-    } else {
-      levelContainer.classList.remove('hidden');
-    }
-  });
-};
-
-for (var i = 0; i < inputTypes.length; i++) {
-  addClickHandler(effectsButtons[i], classCount()[i]);
-}
+// var addClickHandler = function (thumbnail, className) {
+//   thumbnail.addEventListener('click', function () {
+//     largeImage.className = 'effects__preview--' + className;
+//     if (className === 'none') {
+//       levelContainer.classList.add('hidden');
+//     } else {
+//       levelContainer.classList.remove('hidden');
+//     }
+//   });
+// };
 //
-// var effectsRadio = document.querySelector('.effects');
-// effectsRadio.addEventListener('change', function (evt) {
-//   applyFilter(evt.target.value, 100);
-// });
-// var applyFilter = function (filter) {
-//   largeImage.className = 'effects__preview--' + filter;
-// 	if (className === 'effects__preview--none') {
-//     levelContainer.classList.add('hidden')
-//   } else {
-//     levelContainer.classList.remove('hidden');
-//   }
+// for (var i = 0; i < inputTypes.length; i++) {
+//   addClickHandler(effectsButtons[i], classCount()[i]);
 // }
+//
+var effectsRadio = document.querySelector('.effects');
+effectsRadio.addEventListener('change', function (evt) {
+  applyFilter(evt.target.value, 100);
+});
+var applyFilter = function (filter) {
+  largeImage.className = 'effects__preview--' + filter;
+	if (filter === 'none') {
+    levelContainer.classList.add('hidden')
+  } else {
+    levelContainer.classList.remove('hidden');
+  }
+}
 
 
 // var defineLevelEffect = function () {
