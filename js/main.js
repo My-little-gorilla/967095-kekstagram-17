@@ -161,24 +161,24 @@ var applyFilter = function (filter) {
   }
 };
 // zoom
-
+var zoomImage = document.querySelector('.img-upload__preview');
 var zoomSmaler = document.querySelector('.scale__control--smaller');
 var zoomBigger = document.querySelector('.scale__control--bigger');
 var zoomValueControl = document.querySelector('.scale__control--value');
 zoomValueControl.value = 100;
-var ZOOM_VALUE = 100;
+var zoomValue = 100;
 var VALUE = 25;
 
 var zoom = function (value) {
-  ZOOM_VALUE += value;
-  if (ZOOM_VALUE > 100) {
-    ZOOM_VALUE = 100;
+  zoomValue += value;
+  if (zoomValue > 100) {
+    zoomValue = 100;
   }
-  if (ZOOM_VALUE < 25) {
-    ZOOM_VALUE = 25;
+  if (zoomValue < 25) {
+    zoomValue = 25;
   }
-  zoomValueControl.value = ZOOM_VALUE;
-  largeImage.style.transform = 'scale(' + (ZOOM_VALUE / 100) + ')';
+  zoomValueControl.value = zoomValue;
+  zoomImage.style.transform = 'scale(' + (zoomValue / 100) + ')';
 };
 zoomBigger.addEventListener('click', function () {
   zoom(VALUE);
