@@ -135,7 +135,6 @@ var form = document.querySelector('.img-upload__form');
 var closeButton = document.querySelector('.img-upload__cancel');
 var editForm = document.querySelector('#upload-file');
 var editPhoto = document.querySelector('.img-upload__overlay');
-var largeImage = document.querySelector('.img-upload__preview');
 var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
 
@@ -150,89 +149,81 @@ closeButton.addEventListener('click', function () {
 
 var effectsRadio = document.querySelector('.effects');
 effectsRadio.addEventListener('change', function (evt) {
-  applyFilter(evt.target.value, 100);
+  applyFilter(evt.target.value, MAX_FILTER_VALUE);
 });
 
+var MAX_FILTER_VALUE = 100;
 var effectLevelValue = document.querySelector('.effect-level__value');
 var effectPin = document.querySelector('.effect-level__pin');
 
-var applyFilter = function (filter) {
-  largeImage.className = 'effects__preview--' + filter;
+var imageWrapper = document.querySelector('.img-upload__preview');
+var image = imageWrapper.querySelector('img');
+
+var currentFilter = 'none';
+
+var applyFilter = function (filter, value) {
+  currentFilter = filter;
   if (filter === 'none') {
     levelContainer.classList.add('hidden');
-  } else {
-    levelContainer.classList.remove('hidden');
-  };
+    image.style.filter = null;
+    return;
+  }
+  // Показываем полоску фильтров
+  levelContainer.classList.remove('hidden');
   if (filter === 'chrome') {
-    effectLevelValue = 1;
-    largeImage.style.filter = 'grayscale(' + (effectLevelValue) + ')';
-  };
-    if (filter === 'sepia') {
-      effectLevelValue = 1;
-      largeImage.style.filter = 'sepia(' + (effectLevelValue) + ')';
-    };
-      if (filter === 'marvin') {
-        effectLevelValue = 100 ;
-     largeImage.style.filter = 'invert(' + (effectLevelValue) + ')';
-};
-if (filter === 'phobos') {
-  effectLevelValue = 3;
-  largeImage.style.filter = 'blur(' + (effectLevelValue) + 'px' + ')';
-};
-if (filter === 'heat') {
-  effectLevelValue = 3;
-  largeImage.style.filter = 'brightness(' + (effectLevelValue) + ')';
-};
-
-  effectPin.addEventListener('mouseup', function () {
-    if (filter === 'chrome') {
-      largeImage.style.filter = 'grayscale(' + (effectLevelValue - 1) + ')';
-      console.log(effectLevelValue);
-    };
-    if (filter === 'sepia') {
-      largeImage.style.filter = 'sepia(' + (effectLevelValue - 1) + ')';
-      console.log(effectLevelValue);
-    };
-    if (filter === 'marvin') {
-      largeImage.style.filter = 'invert(' + (effectLevelValue -= 1) + '%' + ')';
-      console.log(effectLevelValue);
-    };
-    if (filter === 'phobos') {
-      largeImage.style.filter = 'blur(' + (effectLevelValue -= 1) + 'px' + ')';
-      console.log(effectLevelValue);
-    };
-    if (filter === 'heat') {
-      largeImage.style.filter = 'brightness(' + (effectLevelValue -= 1) + ')';
-      console.log(effectLevelValue);
-    }
-  });
-
+    image.style.filter = 'grayscale(' + (value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
+  if (filter === 'sepia') {
+    image.style.filter = 'sepia(' + (value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
+  if (filter === 'marvin') {
+    image.style.filter = 'invert(' + value + '%)';
+    return;
+  }
+  if (filter === 'phobos') {
+    image.style.filter = 'blur(' + (3 * value / MAX_FILTER_VALUE) + 'px)';
+    return;
+  }
+  if (filter === 'heat') {
+    image.style.filter = 'brightness(' + (3 * value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
 };
 
+// В одном из следующих заданий мы будем менять effectLevelValue.value
+// во время перетаскивания, а пока нам достаточно того, что записано в нем
+// по умолчанию
+effectPin.addEventListener('mouseup', function () {
+  var value = effectLevelValue.value;
+  applyFilter(currentFilter, value);
+});
 
 // zoom
-var zoomImage = document.querySelector('.img-upload__preview');
+var MAX_VALUE = 100;
+var VALUE_STEP = 25;
+
 var zoomSmaler = document.querySelector('.scale__control--smaller');
 var zoomBigger = document.querySelector('.scale__control--bigger');
 var zoomValueControl = document.querySelector('.scale__control--value');
 zoomValueControl.value = 100;
 var zoomValue = 100;
-var VALUE = 25;
 
-var zoom = function (value) {
+var zoom = function (value, maxValue) {
   zoomValue += value;
-  if (zoomValue > 100) {
-    zoomValue = 100;
+  if (zoomValue > maxValue) {
+    zoomValue = maxValue;
   }
-  if (zoomValue < 25) {
-    zoomValue = 25;
+  if (zoomValue < VALUE_STEP) {
+    zoomValue = VALUE_STEP;
   }
   zoomValueControl.value = zoomValue;
-  zoomImage.style.transform = 'scale(' + (zoomValue / 100) + ')';
+  image.style.transform = 'scale(' + (zoomValue / maxValue) + ')';
 };
 zoomBigger.addEventListener('click', function () {
-  zoom(VALUE);
+  zoom(VALUE_STEP, MAX_VALUE);
 });
 zoomSmaler.addEventListener('click', function () {
-  zoom(VALUE * -1);
+  zoom(VALUE_STEP * -1, MAX_VALUE);
 });
