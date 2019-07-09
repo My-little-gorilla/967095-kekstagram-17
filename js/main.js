@@ -101,10 +101,6 @@ var getRandomPictures = function () {
 var renderPictures = function (pictures) {
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#picture').content.querySelector('.picture');
-  // img
-  // div
-  //  span.likes
-  //  span.comments
 
   var container = document.querySelector('.pictures');
 
@@ -135,3 +131,99 @@ renderPictures(pictures);
 //    4. 2. 2.  Число комментариев
 //  4. 3. Добавить получившийся шаблон во фрагмент
 // 5. Вставить фрагмент в конец контейнера
+var form = document.querySelector('.img-upload__form');
+var closeButton = document.querySelector('.img-upload__cancel');
+var editForm = document.querySelector('#upload-file');
+var editPhoto = document.querySelector('.img-upload__overlay');
+var levelContainer = document.querySelector('.effect-level');
+levelContainer.classList.add('hidden');
+
+editForm.addEventListener('change', function () {
+  editPhoto.classList.remove('hidden');
+});
+
+closeButton.addEventListener('click', function () {
+  editPhoto.classList.add('hidden');
+  form.reset();
+});
+
+var effectsRadio = document.querySelector('.effects');
+effectsRadio.addEventListener('change', function (evt) {
+  applyFilter(evt.target.value, MAX_FILTER_VALUE);
+});
+
+var MAX_FILTER_VALUE = 100;
+var effectLevelValue = document.querySelector('.effect-level__value');
+var effectPin = document.querySelector('.effect-level__pin');
+
+var imageWrapper = document.querySelector('.img-upload__preview');
+var image = imageWrapper.querySelector('img');
+
+var currentFilter = 'none';
+
+var applyFilter = function (filter, value) {
+  currentFilter = filter;
+  if (filter === 'none') {
+    levelContainer.classList.add('hidden');
+    image.style.filter = null;
+    return;
+  }
+  // Показываем полоску фильтров
+  levelContainer.classList.remove('hidden');
+  if (filter === 'chrome') {
+    image.style.filter = 'grayscale(' + (value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
+  if (filter === 'sepia') {
+    image.style.filter = 'sepia(' + (value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
+  if (filter === 'marvin') {
+    image.style.filter = 'invert(' + value + '%)';
+    return;
+  }
+  if (filter === 'phobos') {
+    image.style.filter = 'blur(' + (3 * value / MAX_FILTER_VALUE) + 'px)';
+    return;
+  }
+  if (filter === 'heat') {
+    image.style.filter = 'brightness(' + (3 * value / MAX_FILTER_VALUE) + ')';
+    return;
+  }
+};
+
+// В одном из следующих заданий мы будем менять effectLevelValue.value
+// во время перетаскивания, а пока нам достаточно того, что записано в нем
+// по умолчанию
+effectPin.addEventListener('mouseup', function () {
+  var value = effectLevelValue.value;
+  applyFilter(currentFilter, value);
+});
+
+// zoom
+var MAX_VALUE = 100;
+var VALUE_STEP = 25;
+
+var zoomSmaler = document.querySelector('.scale__control--smaller');
+var zoomBigger = document.querySelector('.scale__control--bigger');
+var zoomValueControl = document.querySelector('.scale__control--value');
+zoomValueControl.value = 100;
+var zoomValue = 100;
+
+var zoom = function (value, maxValue) {
+  zoomValue += value;
+  if (zoomValue > maxValue) {
+    zoomValue = maxValue;
+  }
+  if (zoomValue < VALUE_STEP) {
+    zoomValue = VALUE_STEP;
+  }
+  zoomValueControl.value = zoomValue;
+  image.style.transform = 'scale(' + (zoomValue / maxValue) + ')';
+};
+zoomBigger.addEventListener('click', function () {
+  zoom(VALUE_STEP, MAX_VALUE);
+});
+zoomSmaler.addEventListener('click', function () {
+  zoom(VALUE_STEP * -1, MAX_VALUE);
+});
