@@ -1,5 +1,9 @@
 'use strict';
 
+var MAX_FILTER_VALUE = 100;
+var MAX_VALUE = 100;
+var VALUE_STEP = 25;
+
 var names = [
   'Тогипи', 'Снорлакс', 'Пикачу', 'Мяут', 'Пепе', 'ЪЕЪ', 'Бинтуронг', 'Дед', 'Новый герой Новый поэт'
 ];
@@ -152,7 +156,6 @@ effectsRadio.addEventListener('change', function (evt) {
   applyFilter(evt.target.value, MAX_FILTER_VALUE);
 });
 
-var MAX_FILTER_VALUE = 100;
 var effectLevelValue = document.querySelector('.effect-level__value');
 var effectPin = document.querySelector('.effect-level__pin');
 
@@ -201,8 +204,6 @@ effectPin.addEventListener('mouseup', function () {
 });
 
 // zoom
-var MAX_VALUE = 100;
-var VALUE_STEP = 25;
 
 var zoomSmaler = document.querySelector('.scale__control--smaller');
 var zoomBigger = document.querySelector('.scale__control--bigger');
