@@ -1,5 +1,5 @@
 'use strict';
-
+var ESC_BUTTON = 27;
 var MAX_FILTER_VALUE = 100;
 var MAX_VALUE = 100;
 var VALUE_STEP = 25;
@@ -141,6 +141,17 @@ var editForm = document.querySelector('#upload-file');
 var editPhoto = document.querySelector('.img-upload__overlay');
 var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
+var commentField = document.querySelector('.text__description');
+
+
+var deliteModale = function (evt) {
+  if (evt.keyCode === ESC_BUTTON) {
+    editPhoto.classList.add('hidden');
+  }
+};
+
+document.addEventListener('keydown', deliteModale);
+
 
 editForm.addEventListener('change', function () {
   editPhoto.classList.remove('hidden');
@@ -150,6 +161,12 @@ closeButton.addEventListener('click', function () {
   editPhoto.classList.add('hidden');
   form.reset();
 });
+
+
+commentField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', deliteModale);
+});
+
 
 var effectsRadio = document.querySelector('.effects');
 effectsRadio.addEventListener('change', function (evt) {
