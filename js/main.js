@@ -142,7 +142,7 @@ var editPhoto = document.querySelector('.img-upload__overlay');
 var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
 var commentField = document.querySelector('.text__description');
-
+var levelInput = document.querySelectorAll('.effects__radio');
 
 var deliteModale = function (evt) {
   if (evt.keyCode === ESC_BUTTON) {
@@ -154,8 +154,21 @@ var deliteModale = function (evt) {
 document.addEventListener('keydown', deliteModale);
 
 
+
+var returnFirstValue = function (arr) {
+  var firstValue = [];
+  for(var i = 0; i < arr.length; i++) {
+    firstValue[i] = arr[i];
+    if (firstValue[i].value === 'none') {
+      var focusValue = firstValue[i];
+      focusValue.focus;
+       }
+    }
+};
+
 editForm.addEventListener('change', function () {
   editPhoto.classList.remove('hidden');
+  returnFirstValue(levelInput);
 });
 
 closeButton.addEventListener('click', function () {
@@ -250,7 +263,3 @@ zoomBigger.addEventListener('click', function () {
 zoomSmaler.addEventListener('click', function () {
   zoom(VALUE_STEP * -1, MAX_VALUE);
 });
-
-if (form == false) {
-  console.log('1');
-}
