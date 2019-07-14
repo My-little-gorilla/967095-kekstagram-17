@@ -147,7 +147,8 @@ var commentField = document.querySelector('.text__description');
 var deliteModale = function (evt) {
   if (evt.keyCode === ESC_BUTTON) {
     editPhoto.classList.add('hidden');
-  }
+     }
+     form.reset();
 };
 
 document.addEventListener('keydown', deliteModale);
@@ -165,6 +166,10 @@ closeButton.addEventListener('click', function () {
 
 commentField.addEventListener('focus', function () {
   document.removeEventListener('keydown', deliteModale);
+});
+
+commentField.addEventListener('blur', function () {
+  document.addEventListener('keydown', deliteModale);
 });
 
 
@@ -245,3 +250,7 @@ zoomBigger.addEventListener('click', function () {
 zoomSmaler.addEventListener('click', function () {
   zoom(VALUE_STEP * -1, MAX_VALUE);
 });
+
+if (form == false) {
+  console.log('1');
+}
