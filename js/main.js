@@ -1,4 +1,8 @@
 'use strict';
+var ESC_BUTTON = 27;
+var MAX_FILTER_VALUE = 100;
+var MAX_VALUE = 100;
+var VALUE_STEP = 25;
 
 var names = [
   'Тогипи', 'Снорлакс', 'Пикачу', 'Мяут', 'Пепе', 'ЪЕЪ', 'Бинтуронг', 'Дед', 'Новый герой Новый поэт'
@@ -137,14 +141,36 @@ var editForm = document.querySelector('#upload-file');
 var editPhoto = document.querySelector('.img-upload__overlay');
 var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
+var commentField = document.querySelector('.text__description');
+
+var close = function () {
+  editPhoto.classList.add('hidden');
+  form.reset();
+};
+
+var deliteModale = function (evt) {
+  if (evt.keyCode === ESC_BUTTON) {
+    close();
+  }
+};
+
+document.addEventListener('keydown', deliteModale);
 
 editForm.addEventListener('change', function () {
   editPhoto.classList.remove('hidden');
+  resetFilter();
 });
 
 closeButton.addEventListener('click', function () {
-  editPhoto.classList.add('hidden');
-  form.reset();
+  close();
+});
+
+commentField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', deliteModale);
+});
+
+commentField.addEventListener('blur', function () {
+  document.addEventListener('keydown', deliteModale);
 });
 
 var effectsRadio = document.querySelector('.effects');
@@ -152,7 +178,6 @@ effectsRadio.addEventListener('change', function (evt) {
   applyFilter(evt.target.value, MAX_FILTER_VALUE);
 });
 
-var MAX_FILTER_VALUE = 100;
 var effectLevelValue = document.querySelector('.effect-level__value');
 var effectPin = document.querySelector('.effect-level__pin');
 
@@ -160,6 +185,21 @@ var imageWrapper = document.querySelector('.img-upload__preview');
 var image = imageWrapper.querySelector('img');
 
 var currentFilter = 'none';
+
+var radioButtons = effectsRadio.querySelectorAll('.effects__radio');
+
+var resetRadioButtons = function () {
+  for (var i = 0; i < radioButtons.length; i++) {
+    var radioButton = radioButtons[i];
+    radioButton.checked = radioButton.value === 'none';
+  }
+};
+
+var resetFilter = function () {
+  applyFilter('none', 100);
+  resetRadioButtons();
+  zoom(100);
+};
 
 var applyFilter = function (filter, value) {
   currentFilter = filter;
@@ -201,8 +241,6 @@ effectPin.addEventListener('mouseup', function () {
 });
 
 // zoom
-var MAX_VALUE = 100;
-var VALUE_STEP = 25;
 
 var zoomSmaler = document.querySelector('.scale__control--smaller');
 var zoomBigger = document.querySelector('.scale__control--bigger');
@@ -210,20 +248,20 @@ var zoomValueControl = document.querySelector('.scale__control--value');
 zoomValueControl.value = 100;
 var zoomValue = 100;
 
-var zoom = function (value, maxValue) {
+var zoom = function (value) {
   zoomValue += value;
-  if (zoomValue > maxValue) {
-    zoomValue = maxValue;
+  if (zoomValue > MAX_VALUE) {
+    zoomValue = MAX_VALUE;
   }
   if (zoomValue < VALUE_STEP) {
     zoomValue = VALUE_STEP;
   }
   zoomValueControl.value = zoomValue;
-  image.style.transform = 'scale(' + (zoomValue / maxValue) + ')';
+  image.style.transform = 'scale(' + (zoomValue / MAX_VALUE) + ')';
 };
 zoomBigger.addEventListener('click', function () {
-  zoom(VALUE_STEP, MAX_VALUE);
+  zoom(VALUE_STEP);
 });
 zoomSmaler.addEventListener('click', function () {
-  zoom(VALUE_STEP * -1, MAX_VALUE);
+  zoom(VALUE_STEP * -1);
 });
