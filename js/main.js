@@ -178,8 +178,64 @@ effectsRadio.addEventListener('change', function (evt) {
   applyFilter(evt.target.value, MAX_FILTER_VALUE);
 });
 
+
+
+
+
+
+
+
 var effectLevelValue = document.querySelector('.effect-level__value');
 var effectPin = document.querySelector('.effect-level__pin');
+
+// пин перемещение пина
+effectPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoord = {
+    x: evt.clientX,
+    y: evt.offsetX
+  };
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoord.y - moveEvt.offsetX
+    };
+
+    startCoord = {
+      x: moveEvt.offsetX
+    };
+    if (startCoord.x <= 0) {
+      startCoord = 0;
+    }
+    if (startCoord.x > 458) {
+      startCoord = 458;
+    }
+    effectPin.style.left = (startCoord.x) + 'px';
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+
+
+
+
+
+
+
+
+
+
 
 var imageWrapper = document.querySelector('.img-upload__preview');
 var image = imageWrapper.querySelector('img');
