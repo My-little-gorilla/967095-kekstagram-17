@@ -179,62 +179,56 @@ effectsRadio.addEventListener('change', function (evt) {
 });
 
 
-
-
-
-
-
-
 var effectLevelValue = document.querySelector('.effect-level__value');
 var effectPin = document.querySelector('.effect-level__pin');
+var effectDepth = document.querySelector('.effect-level__line');
+var effectDepthFill = document.querySelector('.effect-level__depth');
 
 // пин перемещение пина
-effectPin.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
 
-  var startCoord = {
-    x: evt.clientX,
-    y: evt.offsetX
-  };
-  var onMouseMove = function (moveEvt) {
-    moveEvt.preventDefault();
+var addEvent = function (element, event, handler, useCapture) {
+  element.addEventListener(event, handler, useCapture);
+};
 
-    var shift = {
-      x: startCoord.y - moveEvt.offsetX
-    };
+var removeEvent = function (element, event, handler, useCapture) {
+  element.removeEventListener(event, handler, useCapture);
+};
 
-    startCoord = {
-      x: moveEvt.offsetX
-    };
-    if (startCoord.x <= 0) {
-      startCoord = 0;
+var countEffectDepthPercent = function (value, maxValue) {
+  return 100 * value / maxValue;
+};
+
+addEvent(effectPin, 'mousedown', function (evt) {
+  var rect = effectDepth.getBoundingClientRect();
+  // var pinRect = effectPin.getBoundingClientRect();
+  var maxLeft = rect.width;
+  var offsetX = evt.offsetX;
+
+  var onMove = function (evt) {
+    evt.stopPropagation();
+
+    var left = evt.clientX - rect.left - offsetX;
+    if (left < 0) {
+      left = 0;
     }
-    if (startCoord.x > 458) {
-      startCoord = 458;
+    if (left > maxLeft) {
+      left = maxLeft;
     }
-    effectPin.style.left = (startCoord.x) + 'px';
+
+    effectPin.style.left = left + 'px';
+    effectLevelValue = Math.floor(countEffectDepthPercent(left, maxLeft));
+    applyFilter(currentFilter, effectLevelValue);
+    effectDepthFill.style.width = effectLevelValue + '%';
   };
 
-  var onMouseUp = function (upEvt) {
-    upEvt.preventDefault();
-
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+  var onUp = function () {
+    removeEvent(document, 'mousemove', onMove, true);
+    removeEvent(document, 'mouseup', onUp);
   };
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  addEvent(document, 'mousemove', onMove, true);
+  addEvent(document, 'mouseup', onUp);
 });
-
-
-
-
-
-
-
-
-
-
 
 
 var imageWrapper = document.querySelector('.img-upload__preview');
@@ -291,6 +285,8 @@ var applyFilter = function (filter, value) {
 // В одном из следующих заданий мы будем менять effectLevelValue.value
 // во время перетаскивания, а пока нам достаточно того, что записано в нем
 // по умолчанию
+
+
 effectPin.addEventListener('mouseup', function () {
   var value = effectLevelValue.value;
   applyFilter(currentFilter, value);
