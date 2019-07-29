@@ -159,6 +159,7 @@ document.addEventListener('keydown', deliteModale);
 editForm.addEventListener('change', function () {
   editPhoto.classList.remove('hidden');
   resetFilter();
+  movePin();
 });
 
 closeButton.addEventListener('click', function () {
@@ -184,11 +185,17 @@ var effectPin = document.querySelector('.effect-level__pin');
 var effectDepth = document.querySelector('.effect-level__line');
 var effectDepthFill = document.querySelector('.effect-level__depth');
 
+
+
 // пин перемещение пина
+var movePin = function () {
+  effectPin.style.left = MAX_VALUE + '%';
+  effectDepthFill.style.width = MAX_VALUE + '%';
 
 var addEvent = function (element, event, handler, useCapture) {
   element.addEventListener(event, handler, useCapture);
 };
+
 
 var removeEvent = function (element, event, handler, useCapture) {
   element.removeEventListener(event, handler, useCapture);
@@ -197,7 +204,6 @@ var removeEvent = function (element, event, handler, useCapture) {
 var countEffectDepthPercent = function (value, maxValue) {
   return 100 * value / maxValue;
 };
-
 addEvent(effectPin, 'mousedown', function (evt) {
   var rect = effectDepth.getBoundingClientRect();
   // var pinRect = effectPin.getBoundingClientRect();
@@ -221,15 +227,15 @@ addEvent(effectPin, 'mousedown', function (evt) {
     effectDepthFill.style.width = effectLevelValue + '%';
   };
 
-  var onUp = function () {
-    removeEvent(document, 'mousemove', onMove, true);
-    removeEvent(document, 'mouseup', onUp);
-  };
+  var onUp = function (evt) {
+  removeEvent(document, 'mousemove', onMove, true);
+  removeEvent(document, 'mouseup', onUp);
+}
 
-  addEvent(document, 'mousemove', onMove, true);
-  addEvent(document, 'mouseup', onUp);
+addEvent(document, 'mousemove', onMove, true);
+addEvent(document, 'mouseup', onUp);
 });
-
+}
 
 var imageWrapper = document.querySelector('.img-upload__preview');
 var image = imageWrapper.querySelector('img');
