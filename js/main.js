@@ -1,6 +1,5 @@
 'use strict';
 var ESC_BUTTON = 27;
-var MAX_FILTER_VALUE = 100;
 var MAX_VALUE = 100;
 var VALUE_STEP = 25;
 
@@ -26,11 +25,11 @@ var comments = [
 ];
 
 
-var getRandomInt = function (min, max) {
+var getRandomInt = function(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var takePhotos = function () {
+var takePhotos = function() {
   var photos = [];
 
   for (var i = 1; i <= 25; i++) {
@@ -42,28 +41,28 @@ var takePhotos = function () {
 
 // сделать одну функцию
 
-var getRandomCommentMessage = function () {
+var getRandomCommentMessage = function() {
   return comments[getRandomInt(0, comments.length)];
 };
 
-var getRandomName = function () {
+var getRandomName = function() {
   return names[getRandomInt(0, names.length)];
 };
 
-var getRandomAvatar = function () {
+var getRandomAvatar = function() {
   return avatars[getRandomInt(0, avatars.length)];
 };
 
 
 // сделать одну функцию^^^^^
 
-var getRandomLikes = function () {
+var getRandomLikes = function() {
   return getRandomInt(15, 201);
 };
 
 var photos = takePhotos();
 
-var getRandomComment = function () {
+var getRandomComment = function() {
   var userComment = {
     avatar: getRandomAvatar(),
     message: getRandomCommentMessage(),
@@ -72,7 +71,7 @@ var getRandomComment = function () {
   return userComment;
 };
 
-var getRandomComments = function () {
+var getRandomComments = function() {
   var userComments = [];
 
   for (var i = 0; i < 25; i++) {
@@ -81,7 +80,7 @@ var getRandomComments = function () {
   return userComments;
 };
 
-var getRandomPicture = function () {
+var getRandomPicture = function() {
   var photo = photos.pop();
   var likes = getRandomLikes();
 
@@ -93,7 +92,7 @@ var getRandomPicture = function () {
   return picture;
 };
 
-var getRandomPictures = function () {
+var getRandomPictures = function() {
   var pictures = [];
 
   for (var i = 0; i < 25; i++) {
@@ -102,7 +101,7 @@ var getRandomPictures = function () {
   return pictures;
 };
 
-var renderPictures = function (pictures) {
+var renderPictures = function(pictures) {
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#picture').content.querySelector('.picture');
 
@@ -143,12 +142,13 @@ var levelContainer = document.querySelector('.effect-level');
 levelContainer.classList.add('hidden');
 var commentField = document.querySelector('.text__description');
 
-var close = function () {
+var close = function() {
+  removeEvent(effectPin, 'mousedown', onPinMouseDown);
   editPhoto.classList.add('hidden');
   form.reset();
 };
 
-var deliteModale = function (evt) {
+var deliteModale = function(evt) {
   if (evt.keyCode === ESC_BUTTON) {
     close();
   }
@@ -156,27 +156,28 @@ var deliteModale = function (evt) {
 
 document.addEventListener('keydown', deliteModale);
 
-editForm.addEventListener('change', function () {
+editForm.addEventListener('change', function() {
+  addEvent(effectPin, 'mousedown', onPinMouseDown);
   editPhoto.classList.remove('hidden');
   resetFilter();
-  movePin();
 });
 
-closeButton.addEventListener('click', function () {
+closeButton.addEventListener('click', function() {
   close();
 });
 
-commentField.addEventListener('focus', function () {
+commentField.addEventListener('focus', function() {
   document.removeEventListener('keydown', deliteModale);
 });
 
-commentField.addEventListener('blur', function () {
+commentField.addEventListener('blur', function() {
   document.addEventListener('keydown', deliteModale);
 });
 
 var effectsRadio = document.querySelector('.effects');
-effectsRadio.addEventListener('change', function (evt) {
-  applyFilter(evt.target.value, MAX_FILTER_VALUE);
+effectsRadio.addEventListener('change', function(evt) {
+  movePinTo(MAX_VALUE);
+  applyFilter(evt.target.value, MAX_VALUE);
 });
 
 
@@ -185,57 +186,105 @@ var effectPin = document.querySelector('.effect-level__pin');
 var effectDepth = document.querySelector('.effect-level__line');
 var effectDepthFill = document.querySelector('.effect-level__depth');
 
-
-
-// пин перемещение пина
-var movePin = function () {
-  effectPin.style.left = MAX_VALUE + '%';
-  effectDepthFill.style.width = MAX_VALUE + '%';
-
-var addEvent = function (element, event, handler, useCapture) {
+var addEvent = function(element, event, handler, useCapture) {
   element.addEventListener(event, handler, useCapture);
 };
 
 
-var removeEvent = function (element, event, handler, useCapture) {
+var removeEvent = function(element, event, handler, useCapture) {
   element.removeEventListener(event, handler, useCapture);
 };
 
-var countEffectDepthPercent = function (value, maxValue) {
+// пин перемещение пина
+// var movePinToMax = function () {
+//   effectLevelValue.value = MAX_VALUE;
+//   effectPin.style.left = MAX_VALUE + '%';
+//   effectDepthFill.style.width = MAX_VALUE + '%';
+// }
+
+
+var movePinTo = function (value, left) {
+  effectLevelValue.value = value;
+  effectPin.style.left = left ? (left + 'px') : (value + '%');
+  effectDepthFill.style.width = value + '%';
+}
+
+var countEffectDepthPercent = function(value, maxValue) {
   return 100 * value / maxValue;
 };
-addEvent(effectPin, 'mousedown', function (evt) {
+
+var isDrag = false;
+
+
+var onMove = function(evt, rect, offsetX, maxLeft) {
+  var left = evt.clientX - rect.left - offsetX;
+
+  evt.stopPropagation();
+
+
+  if (left < 0) {
+    left = 0;
+  }
+  if (left > maxLeft) {
+    left = maxLeft;
+  }
+
+  var percent = Math.floor(countEffectDepthPercent(left, maxLeft));
+  movePinTo(percent, left);
+  applyFilter(currentFilter, percent);
+
+};
+
+
+
+
+var onPinMouseDown = function (evt) {
+
+  isDrag = true;
   var rect = effectDepth.getBoundingClientRect();
-  // var pinRect = effectPin.getBoundingClientRect();
   var maxLeft = rect.width;
   var offsetX = evt.offsetX;
 
-  var onMove = function (evt) {
-    evt.stopPropagation();
+  onMove(evt, rect, offsetX, maxLeft);
 
-    var left = evt.clientX - rect.left - offsetX;
-    if (left < 0) {
-      left = 0;
-    }
-    if (left > maxLeft) {
-      left = maxLeft;
-    }
 
-    effectPin.style.left = left + 'px';
-    effectLevelValue = Math.floor(countEffectDepthPercent(left, maxLeft));
-    applyFilter(currentFilter, effectLevelValue);
-    effectDepthFill.style.width = effectLevelValue + '%';
-  };
+  // var onMove = function(evt) {
+  //   evt.stopPropagation();
+  //
+  //   var left = evt.clientX - rect.left - offsetX;
+  //   if (left < 0) {
+  //     left = 0;
+  //   }
+  //   if (left > maxLeft) {
+  //     left = maxLeft;
+  //   }
+  //
+  //   var percent = Math.floor(countEffectDepthPercent(left, maxLeft));
+  //   movePinTo(percent, left);
+  //   applyFilter(currentFilter, percent);
+  // };
 
-  var onUp = function (evt) {
-  removeEvent(document, 'mousemove', onMove, true);
-  removeEvent(document, 'mouseup', onUp);
+  var onUp = function(evt) {
+    isDrag = false;
+    removeEvent(document, 'mousemove', onMove, true);
+    removeEvent(document, 'mouseup', onUp);
+  }
+
+  addEvent(document, 'mousemove', onMove, true);
+  addEvent(document, 'mouseup', onUp);
 }
 
-addEvent(document, 'mousemove', onMove, true);
-addEvent(document, 'mouseup', onUp);
-});
+var onSliderDown = function (evt) {
+  if (isDrag) {
+    return;
+  }
+
+  alert('перемещаем');
+  // перемещаем пин в место клика
 }
+
+// НУЖНО ВЕШАТЬ ПРИ ОТКРЫТИИ ОКНА!!!
+addEvent(effectDepth, 'mousedown', onSliderDown);
 
 var imageWrapper = document.querySelector('.img-upload__preview');
 var image = imageWrapper.querySelector('img');
@@ -244,20 +293,20 @@ var currentFilter = 'none';
 
 var radioButtons = effectsRadio.querySelectorAll('.effects__radio');
 
-var resetRadioButtons = function () {
+var resetRadioButtons = function() {
   for (var i = 0; i < radioButtons.length; i++) {
     var radioButton = radioButtons[i];
     radioButton.checked = radioButton.value === 'none';
   }
 };
 
-var resetFilter = function () {
+var resetFilter = function() {
   applyFilter('none', 100);
   resetRadioButtons();
   zoom(100);
 };
 
-var applyFilter = function (filter, value) {
+var applyFilter = function(filter, value) {
   currentFilter = filter;
   if (filter === 'none') {
     levelContainer.classList.add('hidden');
@@ -267,11 +316,11 @@ var applyFilter = function (filter, value) {
   // Показываем полоску фильтров
   levelContainer.classList.remove('hidden');
   if (filter === 'chrome') {
-    image.style.filter = 'grayscale(' + (value / MAX_FILTER_VALUE) + ')';
+    image.style.filter = 'grayscale(' + (value / MAX_VALUE) + ')';
     return;
   }
   if (filter === 'sepia') {
-    image.style.filter = 'sepia(' + (value / MAX_FILTER_VALUE) + ')';
+    image.style.filter = 'sepia(' + (value / MAX_VALUE) + ')';
     return;
   }
   if (filter === 'marvin') {
@@ -279,24 +328,14 @@ var applyFilter = function (filter, value) {
     return;
   }
   if (filter === 'phobos') {
-    image.style.filter = 'blur(' + (3 * value / MAX_FILTER_VALUE) + 'px)';
+    image.style.filter = 'blur(' + (3 * value / MAX_VALUE) + 'px)';
     return;
   }
   if (filter === 'heat') {
-    image.style.filter = 'brightness(' + (3 * value / MAX_FILTER_VALUE) + ')';
+    image.style.filter = 'brightness(' + (3 * value / MAX_VALUE) + ')';
     return;
   }
 };
-
-// В одном из следующих заданий мы будем менять effectLevelValue.value
-// во время перетаскивания, а пока нам достаточно того, что записано в нем
-// по умолчанию
-
-
-effectPin.addEventListener('mouseup', function () {
-  var value = effectLevelValue.value;
-  applyFilter(currentFilter, value);
-});
 
 // zoom
 
@@ -306,7 +345,7 @@ var zoomValueControl = document.querySelector('.scale__control--value');
 zoomValueControl.value = 100;
 var zoomValue = 100;
 
-var zoom = function (value) {
+var zoom = function(value) {
   zoomValue += value;
   if (zoomValue > MAX_VALUE) {
     zoomValue = MAX_VALUE;
@@ -317,9 +356,9 @@ var zoom = function (value) {
   zoomValueControl.value = zoomValue;
   image.style.transform = 'scale(' + (zoomValue / MAX_VALUE) + ')';
 };
-zoomBigger.addEventListener('click', function () {
+zoomBigger.addEventListener('click', function() {
   zoom(VALUE_STEP);
 });
-zoomSmaler.addEventListener('click', function () {
+zoomSmaler.addEventListener('click', function() {
   zoom(VALUE_STEP * -1);
 });
