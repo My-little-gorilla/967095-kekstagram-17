@@ -216,11 +216,8 @@ var countEffectDepthPercent = function(value, maxValue) {
 var isDrag = false;
 
 
-var onMove = function(evt, rect, offsetX, maxLeft) {
-  var left = evt.clientX - rect.left - offsetX;
-
-  evt.stopPropagation();
-
+var move = function(clientX, left, offsetX, maxLeft) {
+  var left = clientX - left - offsetX;
 
   if (left < 0) {
     left = 0;
@@ -235,9 +232,6 @@ var onMove = function(evt, rect, offsetX, maxLeft) {
 
 };
 
-
-
-
 var onPinMouseDown = function (evt) {
 
   isDrag = true;
@@ -245,24 +239,11 @@ var onPinMouseDown = function (evt) {
   var maxLeft = rect.width;
   var offsetX = evt.offsetX;
 
-  onMove(evt, rect, offsetX, maxLeft);
 
-
-  // var onMove = function(evt) {
-  //   evt.stopPropagation();
-  //
-  //   var left = evt.clientX - rect.left - offsetX;
-  //   if (left < 0) {
-  //     left = 0;
-  //   }
-  //   if (left > maxLeft) {
-  //     left = maxLeft;
-  //   }
-  //
-  //   var percent = Math.floor(countEffectDepthPercent(left, maxLeft));
-  //   movePinTo(percent, left);
-  //   applyFilter(currentFilter, percent);
-  // };
+  var onMove = function(evt) {
+    evt.stopPropagation();
+    move(evt.clientX, rect.left, offsetX, maxLeft);
+  };
 
   var onUp = function(evt) {
     isDrag = false;
@@ -279,7 +260,9 @@ var onSliderDown = function (evt) {
     return;
   }
 
-  alert('перемещаем');
+  var rect = effectDepth.getBoundingClientRect();
+
+  move(evt.clientX, rect.left, 0, rect.width);
   // перемещаем пин в место клика
 }
 
